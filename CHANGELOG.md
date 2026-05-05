@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.5.0 (2026-05-05)
+
+### Features
+
+- Rebuild MCP server with explicit tool handlers
+  ([`b1ec65d`](https://github.com/Armgd/fireflyiii-mcp/commit/b1ec65d3791ea625ea894185c4064485443c29de))
+
+
 ## v1.4.0 (2025-08-14)
 
 ### Chores
