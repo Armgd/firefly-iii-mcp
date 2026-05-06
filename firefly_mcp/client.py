@@ -44,12 +44,18 @@ def get_client() -> httpx.AsyncClient:
 
     Reads ``FIREFLY_III_URL`` and ``FIREFLY_III_ACCESS_TOKEN`` from the
     environment. Raises ``KeyError`` if either is missing.
+
+    Set ``FIREFLY_III_VERIFY_SSL=false`` to disable TLS verification (useful for
+    self-signed certificates on a private Firefly III instance). Defaults to on.
     """
     base = os.environ["FIREFLY_III_URL"].rstrip("/")
     token = os.environ["FIREFLY_III_ACCESS_TOKEN"]
+    verify_raw = os.environ.get("FIREFLY_III_VERIFY_SSL", "true").strip().lower()
+    verify = verify_raw not in {"false", "0", "no", "off"}
     return httpx.AsyncClient(
         base_url=f"{base}/api",
         timeout=_TIMEOUT,
+        verify=verify,
         headers={
             "Authorization": f"Bearer {token}",
             "Accept": "application/vnd.api+json",
