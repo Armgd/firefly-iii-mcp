@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.7.0 (2026-05-06)
+
+### Features
+
+- **client**: Support FIREFLY_III_VERIFY_SSL to allow self-signed certs
+  ([`22fd124`](https://github.com/Armgd/firefly-iii-mcp/commit/22fd12491ba2ed47e421ad7570721bdb696e87a6))
+
+
 ## v1.6.0 (2026-05-06)
 
 ### Bug Fixes
