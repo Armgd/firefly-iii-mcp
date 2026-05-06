@@ -6,6 +6,10 @@ user-role message composed by ``macro_body`` from
 ``firefly_mcp.prompts._methodology``.
 """
 
+# Do not add `from __future__ import annotations`: FastMCP's pydantic TypeAdapter
+# cannot rebuild deferred `Annotated[Literal[...], Field(...)]` refs from inside
+# a `register()` closure when converting incoming string arguments.
+
 from typing import Annotated, Literal
 
 from fastmcp import FastMCP

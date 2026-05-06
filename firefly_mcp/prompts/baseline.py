@@ -1,5 +1,9 @@
 """Baseline question templates - thin parameterised wrappers, no methodology."""
 
+# Do not add `from __future__ import annotations`: FastMCP's pydantic TypeAdapter
+# cannot rebuild deferred `Annotated[Literal[...], Field(...)]` refs from inside
+# a `register()` closure when converting incoming string arguments.
+
 from typing import Annotated
 
 from fastmcp import FastMCP
