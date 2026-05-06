@@ -2,6 +2,44 @@
 
 <!-- version list -->
 
+## v1.6.0 (2026-05-06)
+
+### Bug Fixes
+
+- **prompts**: Drop deferred annotations on prompt modules
+  ([`0976bad`](https://github.com/Armgd/firefly-iii-mcp/commit/0976badad100bcc5ae8d08cf1372d57f3d6cc4b6))
+
+### Documentation
+
+- **plans**: Implementation plan for prompt set rewrite
+  ([`bc7c4c3`](https://github.com/Armgd/firefly-iii-mcp/commit/bc7c4c3d821e1f3fea12d0f817b4af4361028b36))
+
+- **prompts**: Design for hybrid prompt set (9 macro playbooks + 6 baseline templates)
+  ([`004a37b`](https://github.com/Armgd/firefly-iii-mcp/commit/004a37bc0b240df24c3fbaed761d67f0c505579e))
+
+- **prompts**: Note future-annotations constraint
+  ([`d3a0881`](https://github.com/Armgd/firefly-iii-mcp/commit/d3a08811e69c82d33eb5a2211f8f99a24df60fcf))
+
+### Features
+
+- **prompts**: Add 9 macro methodology playbooks
+  ([`ede8e65`](https://github.com/Armgd/firefly-iii-mcp/commit/ede8e656edac2f522cf9a544bc27d1daa3650f06))
+
+- **prompts**: Add baseline question templates
+  ([`6c2933b`](https://github.com/Armgd/firefly-iii-mcp/commit/6c2933b73dd31bd193b5ed60dc288f8af339695a))
+
+- **prompts**: Add prompts package skeleton
+  ([`799a830`](https://github.com/Armgd/firefly-iii-mcp/commit/799a830675e5258fd78df624377f1cb79155df67))
+
+- **prompts**: Add shared methodology constants and body composer
+  ([`8bf9f11`](https://github.com/Armgd/firefly-iii-mcp/commit/8bf9f114f74c3a1411822008460e94cdfe0fe162))
+
+### Refactoring
+
+- **server**: Wire new prompt modules and drop inline prompts
+  ([`128ee75`](https://github.com/Armgd/firefly-iii-mcp/commit/128ee7577aab6fe286f78ecd7504862c95b63ff0))
+
+
 ## v1.5.0 (2026-05-05)
 
 ### Features
