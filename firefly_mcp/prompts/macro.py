@@ -6,8 +6,6 @@ user-role message composed by ``macro_body`` from
 ``firefly_mcp.prompts._methodology``.
 """
 
-from __future__ import annotations
-
 from typing import Annotated, Literal
 
 from fastmcp import FastMCP

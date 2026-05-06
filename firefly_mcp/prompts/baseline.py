@@ -1,7 +1,5 @@
 """Baseline question templates - thin parameterised wrappers, no methodology."""
 
-from __future__ import annotations
-
 from typing import Annotated
 
 from fastmcp import FastMCP
