@@ -8,6 +8,7 @@ from fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from .prompts import baseline as prompts_baseline, macro as prompts_macro
 from .tools import (
     accounts,
     attachments,
@@ -63,26 +64,14 @@ for module in (
 ):
     module.register(mcp)
 
+prompts_baseline.register(mcp)
+prompts_macro.register(mcp)
+
 
 @mcp.custom_route("/health", methods=["GET"])
 async def health_check(_request: Request) -> JSONResponse:
     """Liveness probe — does not call the upstream Firefly III API."""
     return JSONResponse({"status": "ok", "service": "Firefly III MCP"})
-
-
-@mcp.prompt
-def get_account_balance_prompt(account_name: str) -> str:
-    """Prompt asking for the current balance of a specific account."""
-    return f"What is the current balance of the account named '{account_name}'?"
-
-
-@mcp.prompt
-def summarize_spending_by_category_prompt(start_date: str, end_date: str) -> str:
-    """Prompt summarizing spending by category between two YYYY-MM-DD dates."""
-    return (
-        "Please provide a summary of my spending by category from "
-        f"{start_date} to {end_date}."
-    )
 
 
 app = mcp.http_app()
