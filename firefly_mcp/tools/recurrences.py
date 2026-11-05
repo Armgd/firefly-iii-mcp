@@ -9,7 +9,6 @@ from pydantic import Field
 
 from ..client import request
 
-
 _REPETITIONS_EXAMPLE = (
     "List of repetition rules. Each item: "
     '{"type": "daily|weekly|ndom|monthly|yearly", "moment": "<see below>", '
