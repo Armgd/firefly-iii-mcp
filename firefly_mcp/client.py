@@ -7,17 +7,24 @@ and code inspection).
 
 from __future__ import annotations
 
+import logging
 import os
 from functools import lru_cache
 from typing import Any
 
 import httpx
+from fastmcp.exceptions import ToolError
 
 _TIMEOUT = 30.0
 
+logger = logging.getLogger(__name__)
 
-class FireflyAPIError(Exception):
+
+class FireflyAPIError(ToolError):
     """Raised when the Firefly III API returns a non-2xx response.
+
+    Being a ``ToolError``, its message (including field-level validation
+    errors) is shown to the model even when other error details are masked.
 
     Attributes:
         status_code: HTTP status from the upstream API.
@@ -32,7 +39,8 @@ class FireflyAPIError(Exception):
         message: str,
         errors: dict[str, Any] | None = None,
     ) -> None:
-        super().__init__(f"Firefly III API error {status_code}: {message}")
+        detail = f" Field errors: {errors}" if errors else ""
+        super().__init__(f"Firefly III API error {status_code}: {message}{detail}")
         self.status_code = status_code
         self.message = message
         self.errors = errors
@@ -80,7 +88,13 @@ async def request(
     client = get_client()
     if params:
         params = {k: v for k, v in params.items() if v is not None}
-    response = await client.request(method, path, params=params, json=json)
+    try:
+        response = await client.request(method, path, params=params, json=json)
+    except httpx.TransportError as exc:
+        logger.warning("Firefly III request %s %s failed: %r", method, path, exc)
+        raise ToolError(
+            "Could not reach Firefly III (network error or timeout). Try again later."
+        ) from exc
 
     if response.status_code == 204 or not response.content:
         return {}

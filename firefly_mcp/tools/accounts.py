@@ -65,11 +65,15 @@ def register(mcp: FastMCP) -> None:
                 )
             ),
         ] = None,
+        active: Annotated[
+            bool | None,
+            Field(description="True: only active accounts. False: only inactive. Default: both."),
+        ] = None,
     ) -> dict:
         return await request(
             "GET",
             "/v1/accounts",
-            params={"type": type, "limit": limit, "page": page, "date": date},
+            params={"type": type, "limit": limit, "page": page, "date": date, "active": active},
         )
 
     @mcp.tool(

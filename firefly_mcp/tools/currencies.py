@@ -164,6 +164,24 @@ def register(mcp: FastMCP) -> None:
         return await request("POST", f"/v1/currencies/{code}/primary")
 
     @mcp.tool(
+        name="list_currency_exchange_rates",
+        description="List all exchange rates where this currency is the source or the target.",
+    )
+    async def list_currency_exchange_rates(
+        code: Annotated[str, Field(description="Currency code, e.g. EUR.")],
+        limit: Annotated[
+            int,
+            Field(ge=1, le=200, description="Items per page (default 50)."),
+        ] = 50,
+        page: Annotated[int, Field(ge=1, description="1-indexed page.")] = 1,
+    ) -> dict:
+        return await request(
+            "GET",
+            f"/v1/currencies/{code}/cer",
+            params={"limit": limit, "page": page},
+        )
+
+    @mcp.tool(
         name="list_currency_accounts",
         description="List all accounts that use the given currency.",
     )

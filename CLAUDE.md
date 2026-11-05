@@ -32,12 +32,17 @@ docker compose up -d
 Required env vars (see `.env.example`, loaded via `python-dotenv`):
 - `FIREFLY_III_URL` — base URL of the Firefly III instance
 - `FIREFLY_III_ACCESS_TOKEN` — Personal Access Token (sent as `Authorization: Bearer ...`)
+- `MCP_AUTH_TOKEN` (optional, 32+ chars) — shared secret MCP clients must send as a bearer token; unset = unauthenticated with a startup warning (`firefly_mcp/auth.py`)
 
-Lint/format: `ruff check .` / `ruff format .` (ruff is the only dev dep).
+Target Firefly III API: v6.7.8 (`firefly-iii-openapi.yaml`).
+
+Lint/format: `ruff check .` / `ruff format .`.
 
 Health check: `GET /health` → `{"status": "ok", "service": "Firefly III MCP"}`.
 
-No test suite exists yet.
+Tests: `uv run pytest` (Firefly HTTP calls are faked with `httpx.MockTransport`, see `tests/conftest.py`).
+
+Every tool name must start with a verb known to `firefly_mcp/annotations.py` (get/list/search/autocomplete/test/validate/count are read-only; create/update/delete/trigger/enable/disable/set/bulk write). It derives the read-only/destructive hints clients see; an unknown verb fails the test suite. Firefly API errors are raised as `FireflyAPIError` (a `ToolError`) so their message reaches the model; any other exception is masked (`mask_error_details=True`).
 
 ## Architecture
 

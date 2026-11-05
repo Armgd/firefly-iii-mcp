@@ -164,6 +164,23 @@ def register(mcp: FastMCP) -> None:
         )
 
     @mcp.tool(
+        name="get_budget_limits_overview_chart",
+        description=(
+            "Like get_budget_overview_chart, but split per budget limit when a "
+            "budget has several limits in the date range."
+        ),
+    )
+    async def get_budget_limits_overview_chart(
+        start: Annotated[str, Field(description="YYYY-MM-DD inclusive start.")],
+        end: Annotated[str, Field(description="YYYY-MM-DD inclusive end.")],
+    ) -> dict:
+        return await request(
+            "GET",
+            "/v1/chart/budget/overview-with-limits",
+            params={"start": start, "end": end},
+        )
+
+    @mcp.tool(
         name="get_category_overview_chart",
         description=(
             "Return the dashboard category-overview chart: spending and "

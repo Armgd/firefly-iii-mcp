@@ -8,7 +8,10 @@ from fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from .prompts import baseline as prompts_baseline, macro as prompts_macro
+from .annotations import VerbAnnotations
+from .auth import auth_from_env
+from .prompts import baseline as prompts_baseline
+from .prompts import macro as prompts_macro
 from .tools import (
     accounts,
     attachments,
@@ -38,9 +41,13 @@ mcp: FastMCP = FastMCP(
         "transactions, budgets (+ limits), bills, piggy banks, categories, "
         "tags, attachments, object groups, rules and rule groups, recurrences, "
         "currencies and exchange rates, autocomplete lookups, and "
-        "pre-aggregated insight summaries. All money values are decimal "
-        "strings; all dates are ISO YYYY-MM-DD."
+        "pre-aggregated insight summaries. Bills are called subscriptions in "
+        "newer Firefly III versions. All money values are decimal strings; "
+        "all dates are ISO YYYY-MM-DD."
     ),
+    auth=auth_from_env(),
+    mask_error_details=True,
+    transforms=[VerbAnnotations()],
 )
 
 for module in (

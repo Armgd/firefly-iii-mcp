@@ -261,3 +261,19 @@ def register(mcp: FastMCP) -> None:
                 "accounts[]": accounts,
             },
         )
+
+    @mcp.tool(
+        name="validate_rule_expression",
+        description=(
+            "Check whether an expression used in a rule action is valid before "
+            "saving the rule. An invalid expression returns the validation error."
+        ),
+    )
+    async def validate_rule_expression(
+        expression: Annotated[str, Field(description="The rule action expression.")],
+    ) -> dict:
+        return await request(
+            "GET",
+            "/v1/rules/validate-expression",
+            params={"expression": expression},
+        )
