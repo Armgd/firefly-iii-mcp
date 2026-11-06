@@ -1,0 +1,110 @@
+name: 00 - CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  PLATFORMS: ${{ vars.PLATFORMS || 'linux/amd64' }}
+
+jobs:
+  lint:
+    runs-on: docker
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/0.13.5/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Lint
+        run: uv run ruff check
+
+      - name: Format
+        run: uv run ruff format --check --exclude docs
+
+  test:
+    runs-on: docker
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/0.13.5/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Test
+        run: uv run pytest
+
+  build:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [lint, test]
+    runs-on: docker
+    outputs:
+      image: ${{ steps.meta.outputs.image }}
+      tag: ${{ steps.meta.outputs.tag }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Image name
+        id: meta
+        run: |
+          registry="${{ vars.REGISTRY }}"
+          registry="${registry:-${GITHUB_SERVER_URL#*://}}"
+          repo="$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')"
+          echo "registry=$registry" >> "$GITHUB_OUTPUT"
+          echo "image=$registry/$repo" >> "$GITHUB_OUTPUT"
+          echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Install Docker CLI
+        run: apt-get update && apt-get install -y --no-install-recommends docker-cli docker-buildx
+
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
+        with:
+          registry: ${{ steps.meta.outputs.registry }}
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - name: Build and push
+        env:
+          IMAGE: ${{ steps.meta.outputs.image }}
+          TAG: ${{ steps.meta.outputs.tag }}
+        run: |
+          docker build --platform "$PLATFORMS" -t "$IMAGE:latest" -t "$IMAGE:$TAG" .
+          docker push "$IMAGE:latest"
+          docker push "$IMAGE:$TAG"
+
+  deploy:
+    needs: build
+    runs-on: docker
+    env:
+      IMAGE: ${{ needs.build.outputs.image }}
+      TAG: ${{ needs.build.outputs.tag }}
+      TARGET: ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}
+      DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+    steps:
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_deploy
+          echo "${{ secrets.DEPLOY_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/id_deploy ~/.ssh/known_hosts
+          printf 'Host *\n  IdentityFile ~/.ssh/id_deploy\n  Port %s\n' \
+            "${{ vars.DEPLOY_PORT || '22' }}" > ~/.ssh/config
+
+      - name: Pull and restart
+        run: |
+          echo "${{ secrets.REGISTRY_TOKEN }}" | ssh "$TARGET" \
+            "docker login '${IMAGE%%/*}' -u '${{ secrets.REGISTRY_USER }}' --password-stdin"
+          ssh "$TARGET" "cd '$DEPLOY_PATH' \
+            && export TAG='$TAG' \
+            && docker compose pull app \
+            && docker compose up -d --wait --wait-timeout 180"
