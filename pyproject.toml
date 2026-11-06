@@ -12,6 +12,9 @@ dependencies = [
     "uvicorn[standard]>=0.54.0",
 ]
 
+[project.optional-dependencies]
+redis = ["py-key-value-aio[redis]>=0.4.6"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

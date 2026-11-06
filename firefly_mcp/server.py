@@ -3,13 +3,15 @@ prompts and the ``/health`` route, and expose ``app`` for uvicorn."""
 
 from __future__ import annotations
 
+import logging
+
 from dotenv import load_dotenv
 from fastmcp import FastMCP
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from .annotations import VerbAnnotations
-from .auth import auth_from_env
+from .auth import OAuthMode, build_auth, resolve_auth_mode
 from .prompts import baseline as prompts_baseline
 from .prompts import macro as prompts_macro
 from .tools import (
@@ -34,6 +36,15 @@ from .tools import (
 
 load_dotenv()
 
+logger = logging.getLogger(__name__)
+AUTH_MODE = resolve_auth_mode()
+if isinstance(AUTH_MODE, OAuthMode):
+    logger.warning(
+        "auth mode: oauth (issuer=%s, callback=%s)", AUTH_MODE.firefly_url, AUTH_MODE.callback_url
+    )
+else:
+    logger.warning("auth mode: pat")
+
 mcp: FastMCP = FastMCP(
     name="Firefly III MCP server",
     instructions=(
@@ -45,7 +56,7 @@ mcp: FastMCP = FastMCP(
         "newer Firefly III versions. All money values are decimal strings; "
         "all dates are ISO YYYY-MM-DD."
     ),
-    auth=auth_from_env(),
+    auth=build_auth(AUTH_MODE),
     mask_error_details=True,
     transforms=[VerbAnnotations()],
 )
@@ -78,7 +89,7 @@ prompts_macro.register(mcp)
 @mcp.custom_route("/health", methods=["GET"])
 async def health_check(_request: Request) -> JSONResponse:
     """Liveness probe — does not call the upstream Firefly III API."""
-    return JSONResponse({"status": "ok", "service": "Firefly III MCP"})
+    return JSONResponse({"status": "ok", "service": "Firefly III MCP", "auth_mode": AUTH_MODE.name})
 
 
 app = mcp.http_app()
