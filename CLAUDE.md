@@ -23,7 +23,7 @@ Run the server:
 fastmcp dev main.py
 
 # Production-like (matches Dockerfile CMD)
-uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
+uvicorn main:app --host 0.0.0.0 --port 8000 --workers 1
 
 # Docker
 docker compose up -d
@@ -31,13 +31,20 @@ docker compose up -d
 
 Required env vars (see `.env.example`, loaded via `python-dotenv`):
 - `FIREFLY_III_URL` — base URL of the Firefly III instance
-- `FIREFLY_III_ACCESS_TOKEN` — Personal Access Token (sent as `Authorization: Bearer ...`)
+- Auth mode, fixed at startup by `resolve_auth_mode()` in `firefly_mcp/auth.py` (mixing them is a startup error):
+  - PAT: `FIREFLY_III_ACCESS_TOKEN`, plus optional `MCP_AUTH_TOKEN` (32+ chars) shared secret for MCP clients; unset = unauthenticated with a startup warning
+  - OAuth: `FIREFLY_III_OAUTH_CLIENT_ID` + `_SECRET` + `MCP_BASE_URL`; users sign in to Firefly via `FireflyOAuthProxy` and `request()` sends each user's own token (`client.current_token()`). Remote base URL needs `FIREFLY_III_OAUTH_JWT_SIGNING_KEY` and `FIREFLY_III_OAUTH_ALLOWED_REDIRECT_URIS`; optional Redis (`FIREFLY_III_OAUTH_REDIS_URL` + `_STORAGE_ENCRYPTION_KEY`, `redis` extra) for multi-worker
+- `FIREFLY_III_VERIFY_SSL` — `true` / `false` / CA file path; `client.ssl_verify()` applies it to API calls, token validation and the OAuth token exchange
 
-Lint/format: `ruff check .` / `ruff format .` (ruff is the only dev dep).
+Target Firefly III API: v6.7.8 (`firefly-iii-openapi.yaml`).
+
+Lint/format: `ruff check .` / `ruff format .`.
 
 Health check: `GET /health` → `{"status": "ok", "service": "Firefly III MCP"}`.
 
-No test suite exists yet.
+Tests: `uv run pytest` (Firefly HTTP calls are faked with `httpx.MockTransport`, see `tests/conftest.py`).
+
+Every tool name must start with a verb known to `firefly_mcp/annotations.py` (get/list/search/autocomplete/test/validate/count are read-only; create/update/delete/trigger/enable/disable/set/bulk write). It derives the read-only/destructive hints clients see; an unknown verb fails the test suite. Firefly API errors are raised as `FireflyAPIError` (a `ToolError`) so their message reaches the model; any other exception is masked (`mask_error_details=True`).
 
 ## Architecture
 

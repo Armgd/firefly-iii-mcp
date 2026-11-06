@@ -43,9 +43,7 @@ def register(mcp: FastMCP) -> None:
     )
     async def create_rule_group(
         title: Annotated[str, Field(description="Rule group title.")],
-        description: Annotated[
-            str | None, Field(description="Free-form description.")
-        ] = None,
+        description: Annotated[str | None, Field(description="Free-form description.")] = None,
         order: Annotated[
             int | None,
             Field(description="Position of this group relative to others."),
@@ -71,13 +69,9 @@ def register(mcp: FastMCP) -> None:
     async def update_rule_group(
         id: Annotated[str, Field(description="Numeric rule group ID.")],
         title: Annotated[str | None, Field(description="New title.")] = None,
-        description: Annotated[
-            str | None, Field(description="New description.")
-        ] = None,
+        description: Annotated[str | None, Field(description="New description.")] = None,
         order: Annotated[int | None, Field(description="New order.")] = None,
-        active: Annotated[
-            bool | None, Field(description="Active flag.")
-        ] = None,
+        active: Annotated[bool | None, Field(description="Active flag.")] = None,
     ) -> dict:
         body = {
             "title": title,
@@ -125,19 +119,13 @@ def register(mcp: FastMCP) -> None:
     )
     async def test_rule_group(
         id: Annotated[str, Field(description="Numeric rule group ID.")],
-        start: Annotated[
-            str | None, Field(description="YYYY-MM-DD start of test window.")
-        ] = None,
-        end: Annotated[
-            str | None, Field(description="YYYY-MM-DD end of test window.")
-        ] = None,
+        start: Annotated[str | None, Field(description="YYYY-MM-DD start of test window.")] = None,
+        end: Annotated[str | None, Field(description="YYYY-MM-DD end of test window.")] = None,
         accounts: Annotated[
             list[int] | None,
             Field(description="Restrict to these asset/liability account IDs."),
         ] = None,
-        limit: Annotated[
-            int | None, Field(ge=1, le=200, description="Items per page.")
-        ] = None,
+        limit: Annotated[int | None, Field(ge=1, le=200, description="Items per page.")] = None,
         page: Annotated[int | None, Field(ge=1, description="1-indexed page.")] = None,
         search_limit: Annotated[
             int | None,
@@ -171,12 +159,8 @@ def register(mcp: FastMCP) -> None:
     )
     async def trigger_rule_group(
         id: Annotated[str, Field(description="Numeric rule group ID.")],
-        start: Annotated[
-            str | None, Field(description="YYYY-MM-DD start of window.")
-        ] = None,
-        end: Annotated[
-            str | None, Field(description="YYYY-MM-DD end of window.")
-        ] = None,
+        start: Annotated[str | None, Field(description="YYYY-MM-DD start of window.")] = None,
+        end: Annotated[str | None, Field(description="YYYY-MM-DD end of window.")] = None,
         accounts: Annotated[
             list[int] | None,
             Field(description="Restrict to these asset/liability account IDs."),

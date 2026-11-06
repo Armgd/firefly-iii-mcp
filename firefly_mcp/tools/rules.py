@@ -83,9 +83,7 @@ def register(mcp: FastMCP) -> None:
                 ),
             ),
         ],
-        description: Annotated[
-            str | None, Field(description="Free-form description.")
-        ] = None,
+        description: Annotated[str | None, Field(description="Free-form description.")] = None,
         order: Annotated[
             int | None,
             Field(description="Position of this rule within its group."),
@@ -138,9 +136,7 @@ def register(mcp: FastMCP) -> None:
     async def update_rule(
         id: Annotated[str, Field(description="Numeric rule ID.")],
         title: Annotated[str | None, Field(description="New title.")] = None,
-        description: Annotated[
-            str | None, Field(description="New description.")
-        ] = None,
+        description: Annotated[str | None, Field(description="New description.")] = None,
         rule_group_id: Annotated[
             str | None, Field(description="Move the rule to this group.")
         ] = None,
@@ -149,12 +145,8 @@ def register(mcp: FastMCP) -> None:
             RuleTriggerType | None,
             Field(description="New firing trigger."),
         ] = None,
-        active: Annotated[
-            bool | None, Field(description="Active flag.")
-        ] = None,
-        strict: Annotated[
-            bool | None, Field(description="Strict matching flag.")
-        ] = None,
+        active: Annotated[bool | None, Field(description="Active flag.")] = None,
+        strict: Annotated[bool | None, Field(description="Strict matching flag.")] = None,
         stop_processing: Annotated[
             bool | None, Field(description="Stop later rules after this one fires.")
         ] = None,
@@ -211,12 +203,8 @@ def register(mcp: FastMCP) -> None:
     )
     async def test_rule(
         id: Annotated[str, Field(description="Numeric rule ID.")],
-        start: Annotated[
-            str | None, Field(description="YYYY-MM-DD start of test window.")
-        ] = None,
-        end: Annotated[
-            str | None, Field(description="YYYY-MM-DD end of test window.")
-        ] = None,
+        start: Annotated[str | None, Field(description="YYYY-MM-DD start of test window.")] = None,
+        end: Annotated[str | None, Field(description="YYYY-MM-DD end of test window.")] = None,
         accounts: Annotated[
             list[int] | None,
             Field(description="Restrict to these asset/liability account IDs."),
@@ -241,12 +229,8 @@ def register(mcp: FastMCP) -> None:
     )
     async def trigger_rule(
         id: Annotated[str, Field(description="Numeric rule ID.")],
-        start: Annotated[
-            str | None, Field(description="YYYY-MM-DD start of window.")
-        ] = None,
-        end: Annotated[
-            str | None, Field(description="YYYY-MM-DD end of window.")
-        ] = None,
+        start: Annotated[str | None, Field(description="YYYY-MM-DD start of window.")] = None,
+        end: Annotated[str | None, Field(description="YYYY-MM-DD end of window.")] = None,
         accounts: Annotated[
             list[int] | None,
             Field(description="Restrict to these asset/liability account IDs."),
@@ -260,4 +244,20 @@ def register(mcp: FastMCP) -> None:
                 "end": end,
                 "accounts[]": accounts,
             },
+        )
+
+    @mcp.tool(
+        name="validate_rule_expression",
+        description=(
+            "Check whether an expression used in a rule action is valid before "
+            "saving the rule. An invalid expression returns the validation error."
+        ),
+    )
+    async def validate_rule_expression(
+        expression: Annotated[str, Field(description="The rule action expression.")],
+    ) -> dict:
+        return await request(
+            "GET",
+            "/v1/rules/validate-expression",
+            params={"expression": expression},
         )

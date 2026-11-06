@@ -60,16 +60,19 @@ def register(mcp: FastMCP) -> None:
             str | None,
             Field(
                 description=(
-                    "YYYY-MM-DD. Compute account balances as of this date. "
-                    "Defaults to today."
+                    "YYYY-MM-DD. Compute account balances as of this date. Defaults to today."
                 )
             ),
+        ] = None,
+        active: Annotated[
+            bool | None,
+            Field(description="True: only active accounts. False: only inactive. Default: both."),
         ] = None,
     ) -> dict:
         return await request(
             "GET",
             "/v1/accounts",
-            params={"type": type, "limit": limit, "page": page, "date": date},
+            params={"type": type, "limit": limit, "page": page, "date": date, "active": active},
         )
 
     @mcp.tool(
@@ -210,10 +213,7 @@ def register(mcp: FastMCP) -> None:
 
     @mcp.tool(
         name="list_account_piggy_banks",
-        description=(
-            "List piggy banks (savings goals) hosted inside this asset "
-            "account."
-        ),
+        description=("List piggy banks (savings goals) hosted inside this asset account."),
     )
     async def list_account_piggy_banks(
         id: Annotated[str, Field(description="Numeric Firefly III account ID.")],
@@ -247,7 +247,9 @@ def register(mcp: FastMCP) -> None:
         end: Annotated[str | None, Field(description="YYYY-MM-DD.")] = None,
         type: Annotated[
             str | None,
-            Field(description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."),
+            Field(
+                description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."
+            ),
         ] = None,
     ) -> dict:
         return await request(

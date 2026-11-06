@@ -87,8 +87,7 @@ def register(mcp: FastMCP) -> None:
             ids.extend(a for a in account_ids if a not in ids)
         if not ids:
             raise ValueError(
-                "create_piggy_bank requires at least one of "
-                "`account_id` or `account_ids`."
+                "create_piggy_bank requires at least one of `account_id` or `account_ids`."
             )
 
         body: dict = {
@@ -165,6 +164,24 @@ def register(mcp: FastMCP) -> None:
         return await request(
             "GET",
             f"/v1/piggy-banks/{id}/attachments",
+            params={"limit": limit, "page": page},
+        )
+
+    @mcp.tool(
+        name="list_piggy_bank_accounts",
+        description="List the accounts a piggy bank saves into (it can span several).",
+    )
+    async def list_piggy_bank_accounts(
+        id: Annotated[str, Field(description="Numeric piggy bank ID.")],
+        limit: Annotated[
+            int,
+            Field(ge=1, le=200, description="Items per page (default 50)."),
+        ] = 50,
+        page: Annotated[int, Field(ge=1, description="1-indexed page.")] = 1,
+    ) -> dict:
+        return await request(
+            "GET",
+            f"/v1/piggy-banks/{id}/accounts",
             params={"limit": limit, "page": page},
         )
 

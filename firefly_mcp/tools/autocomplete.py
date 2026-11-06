@@ -33,7 +33,7 @@ def register(mcp: FastMCP) -> None:
             Field(
                 description=(
                     "Optional list of account types to restrict the search "
-                    "(e.g. [\"asset\", \"expense\"])."
+                    '(e.g. ["asset", "expense"]).'
                 )
             ),
         ] = None,
@@ -100,11 +100,6 @@ def register(mcp: FastMCP) -> None:
         "currencies",
     )
     _make_simple_autocomplete(
-        "autocomplete_currencies_with_code",
-        "/v1/autocomplete/currencies-with-code",
-        "currencies (results include the ISO currency code)",
-    )
-    _make_simple_autocomplete(
         "autocomplete_object_groups",
         "/v1/autocomplete/object-groups",
         "object groups",
@@ -113,11 +108,6 @@ def register(mcp: FastMCP) -> None:
         "autocomplete_piggy_banks",
         "/v1/autocomplete/piggy-banks",
         "piggy banks",
-    )
-    _make_simple_autocomplete(
-        "autocomplete_piggy_banks_with_balance",
-        "/v1/autocomplete/piggy-banks-with-balance",
-        "piggy banks (results include current balance)",
     )
     _make_simple_autocomplete(
         "autocomplete_recurring",
@@ -155,7 +145,7 @@ def register(mcp: FastMCP) -> None:
         "transactions (by description)",
     )
     _make_simple_autocomplete(
-        "autocomplete_transactions_with_id",
-        "/v1/autocomplete/transactions-with-id",
-        "transactions (results include the transaction journal ID)",
+        "autocomplete_transactions_with_meta",
+        "/v1/autocomplete/transactions-with-meta",
+        "transactions (results include IDs, amounts and other details)",
     )

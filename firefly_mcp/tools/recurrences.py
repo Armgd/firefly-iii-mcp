@@ -9,7 +9,6 @@ from pydantic import Field
 
 from ..client import request
 
-
 _REPETITIONS_EXAMPLE = (
     "List of repetition rules. Each item: "
     '{"type": "daily|weekly|ndom|monthly|yearly", "moment": "<see below>", '
@@ -252,8 +251,7 @@ def register(mcp: FastMCP) -> None:
             str | None,
             Field(
                 description=(
-                    "Transaction type filter, e.g. 'withdrawal', 'deposit', "
-                    "'transfer', 'all'."
+                    "Transaction type filter, e.g. 'withdrawal', 'deposit', 'transfer', 'all'."
                 )
             ),
         ] = None,

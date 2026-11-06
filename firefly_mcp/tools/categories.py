@@ -55,10 +55,12 @@ def register(mcp: FastMCP) -> None:
     async def create_category(
         name: Annotated[str, Field(description="Category name.")],
         notes: Annotated[str | None, Field(description="Free-form notes.")] = None,
+        color: Annotated[
+            str | None, Field(description="Hex colour without '#', e.g. FF0000.")
+        ] = None,
     ) -> dict:
-        body = {"name": name}
-        if notes is not None:
-            body["notes"] = notes
+        body = {"name": name, "notes": notes, "color": color}
+        body = {k: v for k, v in body.items() if v is not None}
         return await request("POST", "/v1/categories", json=body)
 
     @mcp.tool(
@@ -69,8 +71,11 @@ def register(mcp: FastMCP) -> None:
         id: Annotated[str, Field(description="Numeric category ID.")],
         name: Annotated[str | None, Field(description="New name.")] = None,
         notes: Annotated[str | None, Field(description="New notes.")] = None,
+        color: Annotated[
+            str | None, Field(description="Hex colour without '#', e.g. FF0000.")
+        ] = None,
     ) -> dict:
-        body = {"name": name, "notes": notes}
+        body = {"name": name, "notes": notes, "color": color}
         body = {k: v for k, v in body.items() if v is not None}
         return await request("PUT", f"/v1/categories/{id}", json=body)
 
@@ -120,7 +125,9 @@ def register(mcp: FastMCP) -> None:
         end: Annotated[str | None, Field(description="YYYY-MM-DD.")] = None,
         type: Annotated[
             str | None,
-            Field(description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."),
+            Field(
+                description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."
+            ),
         ] = None,
     ) -> dict:
         return await request(

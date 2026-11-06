@@ -142,8 +142,7 @@ def register(mcp: FastMCP) -> None:
     @mcp.tool(
         name="create_budget_limit",
         description=(
-            "Create a monetary limit on a budget covering a date range "
-            "(e.g. €300 for May 2026)."
+            "Create a monetary limit on a budget covering a date range (e.g. €300 for May 2026)."
         ),
     )
     async def create_budget_limit(
@@ -220,7 +219,9 @@ def register(mcp: FastMCP) -> None:
         end: Annotated[str | None, Field(description="YYYY-MM-DD.")] = None,
         type: Annotated[
             str | None,
-            Field(description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."),
+            Field(
+                description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."
+            ),
         ] = None,
     ) -> dict:
         return await request(
@@ -252,7 +253,9 @@ def register(mcp: FastMCP) -> None:
         end: Annotated[str | None, Field(description="YYYY-MM-DD.")] = None,
         type: Annotated[
             str | None,
-            Field(description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."),
+            Field(
+                description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."
+            ),
         ] = None,
     ) -> dict:
         return await request(
@@ -303,7 +306,9 @@ def register(mcp: FastMCP) -> None:
         page: Annotated[int, Field(ge=1, description="1-indexed page.")] = 1,
         type: Annotated[
             str | None,
-            Field(description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."),
+            Field(
+                description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."
+            ),
         ] = None,
     ) -> dict:
         return await request(

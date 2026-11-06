@@ -340,6 +340,33 @@ def register(mcp: FastMCP) -> None:
         )
 
     @mcp.tool(
+        name="count_transactions",
+        description=(
+            "Count transactions with an exact external identifier, an exact "
+            "internal reference, or notes containing a phrase. Use before "
+            "creating a transaction to avoid duplicates. Pass at least one filter."
+        ),
+    )
+    async def count_transactions(
+        external_identifier: Annotated[
+            str | None, Field(description="Exact external identifier.")
+        ] = None,
+        internal_reference: Annotated[
+            str | None, Field(description="Exact internal reference.")
+        ] = None,
+        notes: Annotated[str | None, Field(description="Phrase the notes must contain.")] = None,
+    ) -> dict:
+        return await request(
+            "GET",
+            "/v1/search/transactions/count",
+            params={
+                "external_identifier": external_identifier,
+                "internal_reference": internal_reference,
+                "notes": notes,
+            },
+        )
+
+    @mcp.tool(
         name="list_transaction_attachments",
         description=(
             "List attachments (receipts, invoices, etc.) linked to a "
