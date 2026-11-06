@@ -39,7 +39,7 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Install dependencies
-        run: uv sync --frozen
+        run: uv sync --frozen --extra redis
 
       - name: Test
         run: uv run pytest
