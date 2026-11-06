@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.8.1 (2026-11-06)
+
+### Bug Fixes
+
+- Decode percent-encoded Redis password in OAuth storage URL
+  ([`968d3e2`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/968d3e22fece77eb53fbe0b388286d2e21644984))
+
+
 ## v1.8.0 (2026-11-06)
 
 ### Bug Fixes
