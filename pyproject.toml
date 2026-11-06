@@ -30,7 +30,7 @@ target-version = "py312"
 version_toml = ["pyproject.toml:project.version"]
 version_variables = ["firefly_mcp/__init__.py:__version__"]
 assets = []
-build_command = "pip install uv && uv lock --upgrade-package \"$PACKAGE_NAME\" && git add uv.lock && uv build"
+build_command = "uv lock --upgrade-package \"$PACKAGE_NAME\" && git add uv.lock && uv build"
 build_command_env = []
 commit_message = "chore(release): v{version}\n\nAutomated release [skip ci]"
 commit_parser = "conventional"
@@ -91,9 +91,10 @@ ignore_merge_commits = true
 
 [tool.semantic_release.remote]
 name = "origin"
-type = "github"
+type = "gitea"
+token = { env = "GITEA_TOKEN" }
 ignore_token_for_push = false
-insecure = false
+insecure = true
 
 [tool.semantic_release.publish]
 dist_glob_patterns = ["dist/*"]
