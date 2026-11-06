@@ -13,6 +13,7 @@ REMOTE = {
     **OAUTH,
     "MCP_BASE_URL": "https://mcp.example.com",
     "FIREFLY_III_OAUTH_JWT_SIGNING_KEY": "jwt-signing-key-long-enough",
+    "FIREFLY_III_OAUTH_ALLOWED_REDIRECT_URIS": "https://claude.ai/api/mcp/auth_callback",
 }
 
 
@@ -57,6 +58,10 @@ def test_remote_oauth_without_redis_is_allowed():
         ({"FIREFLY_III_OAUTH_CLIENT_ID": "9"}, "FIREFLY_III_OAUTH_CLIENT_SECRET, MCP_BASE_URL"),
         ({**OAUTH, "MCP_BASE_URL": "localhost:8000"}, "MCP_BASE_URL"),
         ({**OAUTH, "MCP_BASE_URL": "https://mcp.example.com"}, "JWT_SIGNING_KEY"),
+        (
+            {k: v for k, v in REMOTE.items() if k != "FIREFLY_III_OAUTH_ALLOWED_REDIRECT_URIS"},
+            "ALLOWED_REDIRECT_URIS",
+        ),
         (
             {**REMOTE, "FIREFLY_III_OAUTH_REDIS_URL": "redis://r:6379/0"},
             "STORAGE_ENCRYPTION_KEY",

@@ -76,8 +76,10 @@ browser and every tool call runs with that user's own Firefly permissions.
    page on first connect.
 
 When `MCP_BASE_URL` is not `localhost`, also set
-`FIREFLY_III_OAUTH_JWT_SIGNING_KEY` (`openssl rand -hex 32`) and serve it over
-HTTPS. Sign-ins are stored encrypted on disk under `FASTMCP_HOME` (mount a
+`FIREFLY_III_OAUTH_JWT_SIGNING_KEY` (`openssl rand -hex 32`) and
+`FIREFLY_III_OAUTH_ALLOWED_REDIRECT_URIS` (the MCP clients allowed to receive a
+sign-in, e.g. `https://claude.ai/api/mcp/auth_callback,http://localhost:*`), and
+serve it over HTTPS. Sign-ins are stored encrypted on disk under `FASTMCP_HOME` (mount a
 volume there in Docker so they survive restarts), which suits one worker. To run
 several workers or replicas, share them through Redis:
 
@@ -89,8 +91,7 @@ FIREFLY_III_OAUTH_STORAGE_ENCRYPTION_KEY=...   # python -c 'from cryptography.fe
 Locally, install Redis support with `uv sync --extra redis` (the Docker image
 includes it). Optional knobs: `FIREFLY_III_OAUTH_VALIDATION_TTL` (seconds a
 user's token is trusted before Firefly is asked again, default 60),
-`FIREFLY_III_OAUTH_ALLOWED_REDIRECT_URIS` (comma-separated client redirect
-patterns), `FIREFLY_III_OAUTH_TOKEN_ENDPOINT_AUTH_METHOD`
+`FIREFLY_III_OAUTH_TOKEN_ENDPOINT_AUTH_METHOD`
 (`client_secret_post` if Firefly rejects the default).
 
 ## Running

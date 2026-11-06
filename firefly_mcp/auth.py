@@ -130,6 +130,13 @@ def _oauth_mode(
     redis_url = get("FIREFLY_III_OAUTH_REDIS_URL")
     if is_remote and not jwt_signing_key:
         raise RuntimeError("Remote OAuth mode requires FIREFLY_III_OAUTH_JWT_SIGNING_KEY.")
+    redirects = get("FIREFLY_III_OAUTH_ALLOWED_REDIRECT_URIS")
+    if is_remote and not redirects:
+        raise RuntimeError(
+            "Remote OAuth mode requires FIREFLY_III_OAUTH_ALLOWED_REDIRECT_URIS "
+            "(comma-separated MCP client redirect patterns, e.g. "
+            "https://claude.ai/api/mcp/auth_callback,http://localhost:*)."
+        )
     if redis_url and not storage_key:
         raise RuntimeError(
             "FIREFLY_III_OAUTH_REDIS_URL requires FIREFLY_III_OAUTH_STORAGE_ENCRYPTION_KEY."
@@ -137,7 +144,6 @@ def _oauth_mode(
     if is_remote and parsed.scheme == "http":
         logger.warning("MCP_BASE_URL is public plain http: tokens travel unencrypted.")
 
-    redirects = get("FIREFLY_III_OAUTH_ALLOWED_REDIRECT_URIS")
     return OAuthMode(
         client_id=client_id,
         client_secret=client_secret,
