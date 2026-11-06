@@ -71,3 +71,22 @@ def test_remote_oauth_without_redis_is_allowed():
 def test_misconfiguration_fails_loudly(env, message):
     with pytest.raises(RuntimeError, match=message):
         resolve_auth_mode(env)
+
+
+def test_redis_password_in_url_is_percent_decoded():
+    from cryptography.fernet import Fernet
+
+    from firefly_mcp.auth import _redis_storage
+
+    mode = resolve_auth_mode(
+        {
+            **REMOTE,
+            "FIREFLY_III_OAUTH_REDIS_URL": "redis://:a%2Fb%40c%3Ad@r:6379/7",
+            "FIREFLY_III_OAUTH_STORAGE_ENCRYPTION_KEY": Fernet.generate_key().decode(),
+        }
+    )
+
+    pool = _redis_storage(mode).key_value._client.connection_pool
+
+    assert pool.connection_kwargs["password"] == "a/b@c:d"
+    assert pool.connection_kwargs["db"] == 7
