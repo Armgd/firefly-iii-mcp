@@ -2,6 +2,57 @@
 
 <!-- version list -->
 
+## v1.8.0 (2026-11-06)
+
+### Bug Fixes
+
+- Keep README.md in the Docker build context
+  ([`a5d446c`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/a5d446c1a85dfe9b655f1262ee9ffd4a0ace96e3))
+
+- **auth**: Require an MCP client redirect allowlist in remote OAuth mode
+  ([`cc3bca4`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/cc3bca461137de043e0a7e8f30f277d2b8ea84da))
+
+### Build System
+
+- **deps**: Upgrade all dependencies
+  ([`32ae02c`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/32ae02c8ba03f6fc447c959906fafa98b30a6c5f))
+
+- **docker**: Modernize image, drop compose, fold docs into README
+  ([`367a34a`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/367a34ae98a1393ce77ea602187129f4efb441d9))
+
+### Chores
+
+- Ignore .DS_Store
+  ([`bfd6251`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/bfd6251ace35269405969f25ce10da021b0816a2))
+
+### Code Style
+
+- Apply ruff format to tool modules
+  ([`c03362e`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/c03362edef79361f5715fcaf8877c26c39c41578))
+
+### Continuous Integration
+
+- Build to the private registry and redeploy over SSH
+  ([`244a4b7`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/244a4b703d517f85230ec2f0ff255997c20f23d1))
+
+- Pin Forgejo workflow actions to commit SHAs
+  ([`12dd5e2`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/12dd5e24bb7bfc2ea3fa0c41cf7990f5dadec605))
+
+- Run lint, release and image build on Forgejo
+  ([`af07513`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/af075134711d5b180fb14096319aea472429aec0))
+
+- Run semantic-release on the Forgejo runner
+  ([`752bdeb`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/752bdeb693e545b12717527b8dff2c82f4c26e52))
+
+### Features
+
+- Align tools with Firefly III 6.7.8 and harden the MCP endpoint
+  ([`33d375a`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/33d375a093b0eafc8471310efd716bb872a8facb))
+
+- **auth**: Add OAuth sign-in via Firefly III with private-CA TLS support
+  ([`2242fe1`](http://10.0.0.62:3000/PlayPlayPlay/fireflyiii-mcp/commit/2242fe10ec2d630a2d07f7ce3801d6605001a097))
+
+
 ## v1.7.0 (2026-05-06)
 
 ### Features
