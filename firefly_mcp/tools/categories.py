@@ -125,7 +125,9 @@ def register(mcp: FastMCP) -> None:
         end: Annotated[str | None, Field(description="YYYY-MM-DD.")] = None,
         type: Annotated[
             str | None,
-            Field(description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."),
+            Field(
+                description="Optional transaction type filter (e.g. withdrawal, deposit, transfer)."
+            ),
         ] = None,
     ) -> dict:
         return await request(

@@ -87,8 +87,7 @@ def register(mcp: FastMCP) -> None:
             ids.extend(a for a in account_ids if a not in ids)
         if not ids:
             raise ValueError(
-                "create_piggy_bank requires at least one of "
-                "`account_id` or `account_ids`."
+                "create_piggy_bank requires at least one of `account_id` or `account_ids`."
             )
 
         body: dict = {

@@ -33,7 +33,7 @@ def register(mcp: FastMCP) -> None:
             Field(
                 description=(
                     "Optional list of account types to restrict the search "
-                    "(e.g. [\"asset\", \"expense\"])."
+                    '(e.g. ["asset", "expense"]).'
                 )
             ),
         ] = None,

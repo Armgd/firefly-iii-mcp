@@ -177,8 +177,7 @@ def register(mcp: FastMCP) -> None:
             str | None,
             Field(
                 description=(
-                    "Filter on transaction type "
-                    "(e.g. 'withdrawal', 'deposit', 'transfer', 'all')."
+                    "Filter on transaction type (e.g. 'withdrawal', 'deposit', 'transfer', 'all')."
                 ),
             ),
         ] = None,

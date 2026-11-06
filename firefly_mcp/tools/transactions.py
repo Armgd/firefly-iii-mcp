@@ -354,9 +354,7 @@ def register(mcp: FastMCP) -> None:
         internal_reference: Annotated[
             str | None, Field(description="Exact internal reference.")
         ] = None,
-        notes: Annotated[
-            str | None, Field(description="Phrase the notes must contain.")
-        ] = None,
+        notes: Annotated[str | None, Field(description="Phrase the notes must contain.")] = None,
     ) -> dict:
         return await request(
             "GET",
