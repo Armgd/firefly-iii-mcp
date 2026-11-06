@@ -249,13 +249,14 @@ class FireflyOAuthProxy(OAuthProxy):
 def _redis_storage(mode: OAuthMode) -> FernetEncryptionWrapper:
     try:
         from key_value.aio.stores.redis import RedisStore
+        from redis.asyncio import Redis
     except ImportError as exc:
         raise RuntimeError(
             "FIREFLY_III_OAUTH_REDIS_URL is set but Redis support is not installed: "
             "install the `redis` extra (uv sync --extra redis)."
         ) from exc
     return FernetEncryptionWrapper(
-        key_value=RedisStore(url=mode.redis_url),
+        key_value=RedisStore(client=Redis.from_url(mode.redis_url, decode_responses=True)),
         fernet=Fernet(mode.storage_encryption_key),
     )
 
